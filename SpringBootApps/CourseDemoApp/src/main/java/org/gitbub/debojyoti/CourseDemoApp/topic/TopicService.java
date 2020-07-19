@@ -2,24 +2,33 @@ package org.gitbub.debojyoti.CourseDemoApp.topic;
 
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class TopicService {
+    private List<Topic> topicRepository;
 
-    private List<Topic> topics = Arrays.asList(
-            new Topic("1", "Machine Learning", "Has a path for machine learning items"),
-            new Topic("2", "Windows System Programming", "Windows kernel programming and stuff"),
-            new Topic("3", "Spring Boot", "A definitive resource for all spring related items")
-    );
+    public TopicService() {
+        topicRepository = new ArrayList<>();
+
+        // Adding mock data
+        topicRepository.add(new Topic("1", "C/C++", "You don't need it but you will end up using it "));
+        topicRepository.add(new Topic("2", "Java", "Very handy to learn this"));
+        topicRepository.add((new Topic("3","C#","If you have ever used Windows must need it")));
+    }
 
     public List<Topic> getAllTopics() {
-        return topics;
+        return topicRepository;
     }
 
     public Optional<Topic> getTopic(String id) {
-        return topics.stream().filter(t -> t.getId().equals(id)).findFirst();
+        return topicRepository.stream().filter(t -> t.getId().equals(id)).findFirst();
+    }
+
+    public void add(Topic newTopic) {
+        // TODO: Should check for if the Caption is present on the system or not
+        topicRepository.add(newTopic);
     }
 }
