@@ -27,8 +27,16 @@ public class TopicService {
         return topicRepository.stream().filter(t -> t.getId().equals(id)).findFirst();
     }
 
-    public void add(Topic newTopic) {
-        // TODO: Should check for if the Caption is present on the system or not
+    public boolean add(Topic newTopic) {
+        String newId = newTopic.getId();
+
+        // The Id should be a new item
+        Optional<Topic> existingTopic = topicRepository.stream()
+                .filter(t -> t.getId().equals(newId))
+                .findFirst();
+        if( existingTopic.isPresent() ) return false;
+
         topicRepository.add(newTopic);
+        return true;
     }
 }

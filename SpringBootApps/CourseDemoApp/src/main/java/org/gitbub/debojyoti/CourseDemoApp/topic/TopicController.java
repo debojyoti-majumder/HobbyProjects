@@ -4,7 +4,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
 
 import java.util.List;
 
@@ -24,18 +33,32 @@ public class TopicController {
 
     @GetMapping("/topic/{topicID}")
     public Topic getTopicWithId(@PathVariable("topicID") String id) {
+        logger.info("Getting topic with Topic ID " + id);
+
         // As the return type of the service is Optional may be there is check required to report error
-        // TODO: Add Error handling if optional value is null
-        logger.info("Getting topic with Topic ID" + id);
-        return topicService.getTopic(id).get();
+        var findResult = topicService.getTopic(id);
+
+        // Throwing an exception in case no topic found
+        if( findResult.isEmpty() ) {
+            var errorMessage = "Not found topic with ID:"+ id;
+            logger.warn(errorMessage);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, errorMessage);
+        }
+
+        // Returning the result
+        return findResult.get();
     }
 
     @PostMapping(value = "/topics")
     public void postTopic(@RequestBody Topic newTopic) {
-        // TODO: Same as the other GET there is no error handling that have been implemented
-        logger.info("Creating a new topic with ID" + newTopic.getId());
-        topicService.add(newTopic);
+        logger.info("Creating a new topic with ID " + newTopic.getId());
+        boolean isAdded = topicService.add(newTopic);
 
-        return;
+        // The repository might not be able to add the new topic
+        if(!isAdded) {
+            var errorMessage = "A topic with ID "+ newTopic.getId() + " is already present";
+            logger.warn(errorMessage);
+            throw new ResponseStatusException(HttpStatus.CONFLICT, errorMessage);
+        }
     }
 }
