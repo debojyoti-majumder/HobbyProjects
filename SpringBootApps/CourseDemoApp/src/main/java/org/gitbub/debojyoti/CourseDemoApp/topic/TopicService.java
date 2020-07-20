@@ -59,4 +59,9 @@ public class TopicService {
 
         return retValue;
     }
+
+    // Simple delete operation
+    public boolean deleteTopic(String Id) {
+        return topicRepository.removeIf(t -> t.getId().equals(Id));
+    }
 }

@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-
 import java.util.List;
 
 @RestController
@@ -73,12 +72,24 @@ public class TopicController {
 
         // As of now the only reason topic might not be updated is the topic id is
         // not found
-        if ( false == isUpdated ) {
+        if (!isUpdated) {
             var errorMessage = "No found topic with ID:"+ topicId;
             logger.warn(errorMessage);
             throw new ResponseStatusException(HttpStatus.NOT_MODIFIED, errorMessage);
         }
 
         logger.info("Topic ID:" + topicId + " updated");
+    }
+
+    @DeleteMapping("/{topicID}")
+    public void deleteHandler(@PathVariable String topicID) {
+        logger.info("Deleting Topic with ID:" + topicID);
+
+        // Asking the service to delete the topic
+        if(!topicService.deleteTopic(topicID)) {
+            var errorMessage = "Not able to delete topic ID:"+ topicID;
+            logger.warn(errorMessage);
+            throw new ResponseStatusException(HttpStatus.NOT_MODIFIED, errorMessage);
+        }
     }
 }
