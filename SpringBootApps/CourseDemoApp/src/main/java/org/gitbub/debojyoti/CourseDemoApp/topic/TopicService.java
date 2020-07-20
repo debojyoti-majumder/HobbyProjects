@@ -39,4 +39,24 @@ public class TopicService {
         topicRepository.add(newTopic);
         return true;
     }
+
+    public boolean updateTopic(Topic t) {
+        boolean retValue = false;
+
+        // Going through each item, must be a better way to use lambda expression
+        for( Topic topic : topicRepository) {
+            // If there is a match with ID
+            if( topic.getId().equals(t.getId())) {
+                // Updating the object
+                topic.setCaption(t.getCaption());
+                topic.setDescription(t.getDescription());
+
+                // Breaking the find
+                retValue = true;
+                break;
+            }
+        }
+
+        return retValue;
+    }
 }
