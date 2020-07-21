@@ -13,7 +13,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/topics")
 public class TopicController {
 
     @Autowired
@@ -21,13 +20,13 @@ public class TopicController {
     private static final Logger logger = LoggerFactory.getLogger(TopicController.class);
 
     // By default it is a mapping for a get request
-    @GetMapping
+    @GetMapping("/api/topics")
     public List<Topic> getAllTopics() {
         logger.info("Listing all the topics");
         return topicService.getAllTopics();
     }
 
-    @GetMapping("/{topicID}")
+    @GetMapping("/api/topics/{topicID}")
     public Topic getTopicWithId(@PathVariable("topicID") String id) {
         logger.info("Getting topic with Topic ID " + id);
 
@@ -45,7 +44,7 @@ public class TopicController {
         return findResult.get();
     }
 
-    @PostMapping
+    @PostMapping("/api/topics")
     public void postTopic(@RequestBody Topic newTopic) {
         var topicId = newTopic.getId();
 
@@ -55,7 +54,7 @@ public class TopicController {
         logger.info("Topic ID:" + addedTopic.getId() + " added.");
     }
 
-    @PutMapping
+    @PutMapping("/api/topics")
     public void putHandler(@RequestBody Topic updatedTopic) {
         var topicId = updatedTopic.getId();
 
@@ -66,7 +65,7 @@ public class TopicController {
         logger.info("Topic ID:" + topicId + " updated");
     }
 
-    @DeleteMapping("/{topicID}")
+    @DeleteMapping("/api/topics/{topicID}")
     public void deleteHandler(@PathVariable String topicID) {
         logger.info("Deleting Topic with ID:" + topicID);
         topicService.deleteTopic(topicID);
