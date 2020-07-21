@@ -1,17 +1,26 @@
 package org.gitbub.debojyoti.CourseDemoApp.topic;
 
+import org.gitbub.debojyoti.CourseDemoApp.course.Course;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Topic {
     @Id
-    public String id;
-    public String caption;
-    public String description;
+    private String id;
+    private String caption;
+    private String description;
+
+    @OneToMany
+    private List<Course> courses;
 
     public Topic() {
-
+        courses = new ArrayList<>();
     }
 
     public Topic(String id, String caption, String description) {
@@ -42,5 +51,11 @@ public class Topic {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    // As of now let this always true, but would be changed later
+    public boolean addCourse(Course newCourse) {
+        courses.add(newCourse);
+        return true;
     }
 }

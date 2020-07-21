@@ -1,8 +1,13 @@
 package org.gitbub.debojyoti.CourseDemoApp.course;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class Course {
-    Integer courseId;
-    String overview;
+    @Id
+    private Integer courseId;
+    private String overview;
 
     public Integer getCourseId() {
         return courseId;
