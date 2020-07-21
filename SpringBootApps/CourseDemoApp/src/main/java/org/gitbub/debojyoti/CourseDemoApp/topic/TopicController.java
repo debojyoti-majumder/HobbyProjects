@@ -45,13 +45,14 @@ public class TopicController {
     }
 
     @PostMapping("/api/topics")
-    public void postTopic(@RequestBody Topic newTopic) {
+    public Topic postTopic(@RequestBody Topic newTopic) {
         var topicId = newTopic.getId();
 
         logger.info("Creating a new topic with ID " + topicId);
         Topic addedTopic = topicService.add(newTopic);
 
         logger.info("Topic ID:" + addedTopic.getId() + " added.");
+        return addedTopic;
     }
 
     @PutMapping("/api/topics")

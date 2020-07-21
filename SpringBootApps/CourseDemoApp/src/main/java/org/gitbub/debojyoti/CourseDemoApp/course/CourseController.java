@@ -21,14 +21,15 @@ public class CourseController {
     @PostMapping("/api/topics/{topicId}/course")
     public Course addNewCourse(@PathVariable Integer topicId, @RequestBody Course newCourse) {
         logger.info("Trying to add new course to topic Id:" + topicId);
+        var addedCourse = service.addCourse(topicId, newCourse);
 
-        if( !service.addCourse(topicId, newCourse) ) {
+        if( null == addedCourse ) {
             var errorMessage = "Was not able to add new course";
             logger.warn(errorMessage);
             throw new ResponseStatusException(HttpStatus.NOT_MODIFIED,errorMessage);
         }
 
         logger.info("Added new course");
-        return newCourse;
+        return addedCourse;
     }
 }

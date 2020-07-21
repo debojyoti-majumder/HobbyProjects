@@ -16,22 +16,22 @@ public class CourseService {
     @Autowired
     private CourseRepository courseRepository;
 
-    public boolean addCourse(@PathVariable Integer topicId, @RequestBody Course newCourse)
+    public Course addCourse(@PathVariable Integer topicId, @RequestBody Course newCourse)
     {
         var returnedResult = topicRepository.findById(topicId);
-        if( returnedResult.isEmpty() ) return false;
+        if( returnedResult.isEmpty() ) return null;
 
         // Getting the topic which needs to be updated
         Topic parentTopic = returnedResult.get();
 
         // Saving the course first
         Course savedItem = courseRepository.save(newCourse);
-        if( savedItem == null ) return false;
+        if( savedItem == null ) return null;
 
         // Update the topic repository
         parentTopic.addCourse(savedItem);
         topicRepository.save(parentTopic);
 
-        return true;
+        return savedItem;
     }
 }
