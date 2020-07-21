@@ -29,9 +29,28 @@ public class CourseDemoTopicTest {
     }
 
     @Test
+    public void addNewTopic() {
+        Topic tp = new Topic();
+
+        // Setting up the object
+        tp.setId("33");
+        tp.setDescription("This is simple description");
+        tp.setCaption("Simple");
+
+        // First we add the topic and then check if it is actually present or not
+        String resourceUri = "http://localhost:" + port + "/api/topics";
+        Topic addedTopic = restTemplate.postForObject(resourceUri, tp, Topic.class);
+        List<Topic> topics = restTemplate.getForObject(resourceUri, List.class);
+
+        // This test if the topic have been added or not
+        assertThat(topics.contains(addedTopic));
+    }
+
+    @Test
     public void getTopicsBasicTest() {
         String resourceUri = "http://localhost:" + port + "/api/topics";
-        List topics = restTemplate.getForObject(resourceUri, List.class);
-        assertThat(topics.size() != 0 );
+        List<Topic> topics = restTemplate.getForObject(resourceUri, List.class);
+
+        assertThat(topics).isNotNull();
     }
 }
