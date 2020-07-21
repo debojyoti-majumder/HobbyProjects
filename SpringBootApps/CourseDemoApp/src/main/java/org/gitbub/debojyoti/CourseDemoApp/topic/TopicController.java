@@ -27,7 +27,7 @@ public class TopicController {
     }
 
     @GetMapping("/api/topics/{topicID}")
-    public Topic getTopicWithId(@PathVariable("topicID") String id) {
+    public Topic getTopicWithId(@PathVariable("topicID") Integer id) {
         logger.info("Getting topic with Topic ID " + id);
 
         // As the return type of the service is Optional may be there is check required to report error
@@ -66,7 +66,7 @@ public class TopicController {
     }
 
     @DeleteMapping("/api/topics/{topicID}")
-    public void deleteHandler(@PathVariable String topicID) {
+    public void deleteHandler(@PathVariable Integer topicID) {
         logger.info("Deleting Topic with ID:" + topicID);
         topicService.deleteTopic(topicID);
     }

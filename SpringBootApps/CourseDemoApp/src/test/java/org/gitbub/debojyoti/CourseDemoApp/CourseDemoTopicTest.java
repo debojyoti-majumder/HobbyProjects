@@ -33,7 +33,6 @@ public class CourseDemoTopicTest {
         Topic tp = new Topic();
 
         // Setting up the object
-        tp.setId("33");
         tp.setDescription("This is simple description");
         tp.setCaption("Simple");
 

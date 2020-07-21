@@ -19,7 +19,7 @@ public class CourseController {
     private CourseService service;
 
     @PostMapping("/api/topics/{topicId}/course")
-    public Course addNewCourse(@PathVariable String topicId, @RequestBody Course newCourse) {
+    public Course addNewCourse(@PathVariable Integer topicId, @RequestBody Course newCourse) {
         logger.info("Trying to add new course to topic Id:" + topicId);
 
         if( !service.addCourse(topicId, newCourse) ) {

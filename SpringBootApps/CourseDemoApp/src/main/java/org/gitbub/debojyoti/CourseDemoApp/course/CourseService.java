@@ -16,7 +16,7 @@ public class CourseService {
     @Autowired
     private CourseRepository courseRepository;
 
-    public boolean addCourse(@PathVariable String topicId, @RequestBody Course newCourse)
+    public boolean addCourse(@PathVariable Integer topicId, @RequestBody Course newCourse)
     {
         var returnedResult = topicRepository.findById(topicId);
         if( returnedResult.isEmpty() ) return false;

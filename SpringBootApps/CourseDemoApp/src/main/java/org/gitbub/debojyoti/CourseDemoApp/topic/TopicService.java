@@ -27,7 +27,7 @@ public class TopicService {
         return returnValue;
     }
 
-    public Optional<Topic> getTopic(String id) {
+    public Optional<Topic> getTopic(Integer id) {
         return repository.findById(id);
     }
 
@@ -39,7 +39,7 @@ public class TopicService {
         return repository.save(t);
     }
 
-    public void deleteTopic(String Id) {
+    public void deleteTopic(Integer Id) {
         repository.deleteById(Id);
     }
 }
