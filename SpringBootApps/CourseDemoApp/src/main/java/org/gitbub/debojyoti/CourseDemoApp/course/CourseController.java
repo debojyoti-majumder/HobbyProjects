@@ -1,36 +1,34 @@
 package org.gitbub.debojyoti.CourseDemoApp.course;
 
-import org.gitbub.debojyoti.CourseDemoApp.topic.Topic;
-import org.gitbub.debojyoti.CourseDemoApp.topic.TopicRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.server.ResponseStatusException;
 
 @Controller
 public class CourseController {
     private static final Logger logger = LoggerFactory.getLogger(CourseController.class);
 
     @Autowired
-    private TopicRepository repository;
+    private CourseService service;
 
     @PostMapping("/api/topics/{topicId}/course")
-    public void addNewCourse(@PathVariable String topicId, @RequestBody Course newCourse) {
+    public Course addNewCourse(@PathVariable String topicId, @RequestBody Course newCourse) {
         logger.info("Trying to add new course to topic Id:" + topicId);
-        var parentTopic = repository.findById(topicId);
 
-        if (parentTopic.isEmpty()) return;
+        if( !service.addCourse(topicId, newCourse) ) {
+            var errorMessage = "Was not able to add new course";
+            logger.warn(errorMessage);
+            throw new ResponseStatusException(HttpStatus.NOT_MODIFIED,errorMessage);
+        }
 
-        // Obtain the parent topic
-        Topic pTopic = parentTopic.get();
-        logger.info("Got parent topic with name" + pTopic.getCaption());
-
-        // TODO: This creates a crash, saying there are no repository, has to be fixed
-        pTopic.addCourse(newCourse);
-        repository.save(pTopic);
+        logger.info("Added new course");
+        return newCourse;
     }
 }
