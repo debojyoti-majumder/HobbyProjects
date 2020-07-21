@@ -1,5 +1,6 @@
 package org.gitbub.debojyoti.CourseDemoApp.topic;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -10,58 +11,35 @@ import java.util.Optional;
 public class TopicService {
     private List<Topic> topicRepository;
 
-    public TopicService() {
-        topicRepository = new ArrayList<>();
+    @Autowired
+    private TopicRepository repository;
 
-        // Adding mock data
-        topicRepository.add(new Topic("1", "C/C++", "You don't need it but you will end up using it "));
-        topicRepository.add(new Topic("2", "Java", "Very handy to learn this"));
-        topicRepository.add((new Topic("3","C#","If you have ever used Windows must need it")));
+    public TopicService() {
     }
 
     public List<Topic> getAllTopics() {
-        return topicRepository;
+        // Should be able to add pagination on this one
+        List<Topic> returnValue = new ArrayList<>();
+        for (Topic topic : repository.findAll()) {
+            returnValue.add(topic);
+        }
+
+        return returnValue;
     }
 
     public Optional<Topic> getTopic(String id) {
-        return topicRepository.stream().filter(t -> t.getId().equals(id)).findFirst();
+        return repository.findById(id);
     }
 
-    public boolean add(Topic newTopic) {
-        String newId = newTopic.getId();
-
-        // The Id should be a new item
-        Optional<Topic> existingTopic = topicRepository.stream()
-                .filter(t -> t.getId().equals(newId))
-                .findFirst();
-        if( existingTopic.isPresent() ) return false;
-
-        topicRepository.add(newTopic);
-        return true;
+    public Topic add(Topic newTopic) {
+        return repository.save(newTopic);
     }
 
-    public boolean updateTopic(Topic t) {
-        boolean retValue = false;
-
-        // Going through each item, must be a better way to use lambda expression
-        for( Topic topic : topicRepository) {
-            // If there is a match with ID
-            if( topic.getId().equals(t.getId())) {
-                // Updating the object
-                topic.setCaption(t.getCaption());
-                topic.setDescription(t.getDescription());
-
-                // Breaking the find
-                retValue = true;
-                break;
-            }
-        }
-
-        return retValue;
+    public Topic updateTopic(Topic t) {
+        return repository.save(t);
     }
 
-    // Simple delete operation
-    public boolean deleteTopic(String Id) {
-        return topicRepository.removeIf(t -> t.getId().equals(Id));
+    public void deleteTopic(String Id) {
+        repository.deleteById(Id);
     }
 }

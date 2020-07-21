@@ -1,6 +1,11 @@
 package org.gitbub.debojyoti.CourseDemoApp.topic;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class Topic {
+    @Id
     public String id;
     public String caption;
     public String description;

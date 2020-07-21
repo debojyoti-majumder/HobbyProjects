@@ -50,16 +50,9 @@ public class TopicController {
         var topicId = newTopic.getId();
 
         logger.info("Creating a new topic with ID " + topicId);
-        boolean isAdded = topicService.add(newTopic);
+        Topic addedTopic = topicService.add(newTopic);
 
-        // The repository might not be able to add the new topic
-        if(!isAdded) {
-            var errorMessage = "A topic with ID "+ topicId + " is already present";
-            logger.warn(errorMessage);
-            throw new ResponseStatusException(HttpStatus.CONFLICT, errorMessage);
-        }
-
-        logger.info("Topic ID:" + topicId + " added.");
+        logger.info("Topic ID:" + addedTopic.getId() + " added.");
     }
 
     @PutMapping
@@ -68,15 +61,7 @@ public class TopicController {
 
         // Asking the service to update the topic
         logger.info("Updating topic ID:" + topicId);
-        boolean isUpdated = topicService.updateTopic(updatedTopic);
-
-        // As of now the only reason topic might not be updated is the topic id is
-        // not found
-        if (!isUpdated) {
-            var errorMessage = "No found topic with ID:"+ topicId;
-            logger.warn(errorMessage);
-            throw new ResponseStatusException(HttpStatus.NOT_MODIFIED, errorMessage);
-        }
+        topicService.updateTopic(updatedTopic);
 
         logger.info("Topic ID:" + topicId + " updated");
     }
@@ -84,12 +69,6 @@ public class TopicController {
     @DeleteMapping("/{topicID}")
     public void deleteHandler(@PathVariable String topicID) {
         logger.info("Deleting Topic with ID:" + topicID);
-
-        // Asking the service to delete the topic
-        if(!topicService.deleteTopic(topicID)) {
-            var errorMessage = "Not able to delete topic ID:"+ topicID;
-            logger.warn(errorMessage);
-            throw new ResponseStatusException(HttpStatus.NOT_MODIFIED, errorMessage);
-        }
+        topicService.deleteTopic(topicID);
     }
 }
