@@ -1,2 +1,5 @@
 
 SpringBootApps/CourseDemoApp/.mvn/wrapper/maven-wrapper.jar
+*.csv
+deepLearningFunda/.idea/modules.xml
+deepLearningFunda/.idea/misc.xml
