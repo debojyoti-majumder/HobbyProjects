@@ -5,6 +5,7 @@ import numpy as np
 tf.disable_v2_behavior()
 
 
+# Data source: https://www.kaggle.com/uciml/iris
 # TODO: Make this a class with constructor so there are reusable
 # methods for other common task
 def load_data():
@@ -34,6 +35,16 @@ def load_data():
     return train_input, test_input, train_output, test_output
 
 
+def nn_layer(layer_input, weight_shape, bias_shape):
+    weight_init = tf.random_uniform_initializer(minval=-1, maxval=1)
+    bias_init = tf.constant_initializer(value=0)
+
+    W = tf.get_variable('Weight', weight_shape, initializer=weight_init)
+    b = tf.get_variable('bias', bias_shape, initializer=bias_init)
+
+    return tf.matmul(layer_input, W) + b
+
+
 print("Stating the training model")
 
 # TODO: This not a good way of using variable have to use some type of object related functionality
@@ -43,3 +54,16 @@ print(train_i.head())
 print(test_i.head())
 print(train_out.head())
 print(test_out.head())
+
+session = tf.Session()
+
+# Let pass 10 items
+start_index = 0
+
+# TODO This is to be done in a loop
+inp_1 = train_i[start_index:start_index + 10]
+print(inp_1.shape)
+
+# TODO Fixing this error Op has type float32 that does not match type float64 of argument 'a'
+comp = nn_layer(inp_1, [4, 3], [3])
+session.run(comp)
