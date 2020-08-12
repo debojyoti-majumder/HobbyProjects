@@ -39,8 +39,8 @@ def nn_layer(layer_input, weight_shape, bias_shape):
     weight_init = tf.random_uniform_initializer(minval=-1, maxval=1)
     bias_init = tf.constant_initializer(value=0)
 
-    W = tf.get_variable('Weight', weight_shape, initializer=weight_init)
-    b = tf.get_variable('bias', bias_shape, initializer=bias_init)
+    W = tf.get_variable('Weight', weight_shape, initializer=weight_init, dtype=tf.float32)
+    b = tf.get_variable('bias', bias_shape, initializer=bias_init, dtype=tf.float32)
 
     return tf.matmul(layer_input, W) + b
 
@@ -50,20 +50,21 @@ print("Stating the training model")
 # TODO: This not a good way of using variable have to use some type of object related functionality
 train_i, test_i, train_out, test_out = load_data()
 
-print(train_i.head())
-print(test_i.head())
-print(train_out.head())
-print(test_out.head())
 
-session = tf.Session()
+with tf.Session() as session:
+    # Let pass 10 items
+    start_index = 0    
+    
+    # TODO This is to be done in a loop
+    inp_1 = train_i[start_index:start_index + 10]
 
-# Let pass 10 items
-start_index = 0
-
-# TODO This is to be done in a loop
-inp_1 = train_i[start_index:start_index + 10]
-print(inp_1.shape)
-
-# TODO Fixing this error Op has type float32 that does not match type float64 of argument 'a'
-comp = nn_layer(inp_1, [4, 3], [3])
-session.run(comp)
+    # TODO Fixing this error Op has type float32 that does not match type float64 of argument 'a'
+    # 3 because there are 3 types of output, 4 becuase there are 4 features
+    input_placeholder = tf.placeholder(tf.float32, shape=(None, 4))
+    comp = nn_layer(input_placeholder, [4, 3], [3])
+    
+    init = tf.initialize_all_variables()
+    session.run(init)
+    
+    # This is where the actual computation happens
+    session.run(comp, feed_dict={input_placeholder: inp_1})
