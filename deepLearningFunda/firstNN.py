@@ -44,27 +44,34 @@ def nn_layer(layer_input, weight_shape, bias_shape):
 
     return tf.matmul(layer_input, W) + b
 
+def my_network_model(data_input, number_of_features, output_class):
+    output_1 = nn_layer(data_input, [number_of_features, output_class], [output_class])
 
-print("Stating the training model")
+    return output_1
 
 # TODO: This not a good way of using variable have to use some type of object related functionality
 train_i, test_i, train_out, test_out = load_data()
 
 
-with tf.Session() as session:
-    # Let pass 10 items
-    start_index = 0    
-    
-    # TODO This is to be done in a loop
-    inp_1 = train_i[start_index:start_index + 10]
-
-    # TODO Fixing this error Op has type float32 that does not match type float64 of argument 'a'
-    # 3 because there are 3 types of output, 4 becuase there are 4 features
+def do_training(tf_session, input_batch):
     input_placeholder = tf.placeholder(tf.float32, shape=(None, 4))
-    comp = nn_layer(input_placeholder, [4, 3], [3])
+    pred = my_network_model(input_placeholder, 4, 3)
     
     init = tf.initialize_all_variables()
-    session.run(init)
-    
-    # This is where the actual computation happens
-    session.run(comp, feed_dict={input_placeholder: inp_1})
+    tf_session.run(init)
+
+    session.run(pred, feed_dict={input_placeholder: input_batch})
+
+with tf.Session(config=tf.ConfigProto(log_device_placement=False)) as session:
+    start_index = 0  
+
+    with tf.variable_scope("shared_variable") as scope:     
+        # TODO: This needs to done based on data size
+        for i in range(2) :
+            train_data = train_i[start_index:start_index + 10]
+
+            # Does the actual computation
+            do_training(session, train_data)
+
+            start_index += 10
+            scope.reuse_variables()
