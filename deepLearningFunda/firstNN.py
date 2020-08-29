@@ -44,34 +44,68 @@ def nn_layer(layer_input, weight_shape, bias_shape):
 
     return tf.matmul(layer_input, W) + b
 
+
 def my_network_model(data_input, number_of_features, output_class):
     output_1 = nn_layer(data_input, [number_of_features, output_class], [output_class])
 
     return output_1
 
+
+# Actual inference function to be used
+def inference_with_softmax(data_input, number_of_features, output_class):
+    network_output = my_network_model(data_input, number_of_features, output_class)
+    softmax_output = tf.nn.softmax(network_output)
+
+    return softmax_output
+
+
+def graddecent_training(cost, global_step):
+    optimizer = tf.train.GradientDescentOptimizer(0.01)
+
+    # Should be minimizing the cost
+    min_cost = optimizer.minimize(cost, global_step=global_step)
+    return min_cost
+
+
+def training_loss(predicted_output, actual_output):
+    dot_product = actual_output * tf.log(predicted_output)
+
+    entropy = - tf.reduce_mean(dot_product, reduction_indices=1)
+    loss = tf.reduce_mean(entropy)
+
+    return loss
+
+
 # TODO: This not a good way of using variable have to use some type of object related functionality
 train_i, test_i, train_out, test_out = load_data()
 
 
-def do_training(tf_session, input_batch):
+def do_training(tf_session, input_batch, output_batch):
     input_placeholder = tf.placeholder(tf.float32, shape=(None, 4))
-    pred = my_network_model(input_placeholder, 4, 3)
-    
+    predicted_output = inference_with_softmax(input_placeholder, 4, 3)
+
+    cost = training_loss(predicted_output, output_batch)
+    gl_steps = tf.Variable(0, name="global_step", trainable=False)
+    grad_train_op = graddecent_training(cost, gl_steps)
+
     init = tf.initialize_all_variables()
     tf_session.run(init)
 
-    session.run(pred, feed_dict={input_placeholder: input_batch})
+    session.run(grad_train_op, feed_dict={input_placeholder: input_batch})
+
 
 with tf.Session(config=tf.ConfigProto(log_device_placement=False)) as session:
-    start_index = 0  
+    start_index = 0
+    batch_size = 10
 
-    with tf.variable_scope("shared_variable") as scope:     
+    with tf.variable_scope("shared_variable") as scope:
         # TODO: This needs to done based on data size
-        for i in range(2) :
-            train_data = train_i[start_index:start_index + 10]
+        for i in range(2):
+            train_data = train_i[start_index:start_index + batch_size]
+            train_actual_output = test_i[start_index:start_index + batch_size]
 
             # Does the actual computation
-            do_training(session, train_data)
+            do_training(session, train_data, train_actual_output)
 
-            start_index += 10
+            start_index += batch_size
             scope.reuse_variables()
