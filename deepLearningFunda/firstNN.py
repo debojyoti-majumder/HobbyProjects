@@ -17,7 +17,6 @@ def load_data():
 
     # Species is categorical variable let's change to int
     data['Species'], mapping_index = pd.Series(data['Species']).factorize()
-    print(data.head())
     print(mapping_index)
 
     # Splitting the training and testing data
@@ -59,7 +58,7 @@ def inference_with_softmax(data_input, number_of_features, output_class):
     return softmax_output
 
 
-def graddecent_training(cost, global_step):
+def gradient_decent_training(cost, global_step):
     optimizer = tf.train.GradientDescentOptimizer(0.01)
 
     # Should be minimizing the cost
@@ -77,16 +76,25 @@ def training_loss(predicted_output, actual_output):
 
 
 # TODO: This not a good way of using variable have to use some type of object related functionality
+# As of now using them as global variable
 train_i, test_i, train_out, test_out = load_data()
+input_shape = 4
+output_shape = 3
 
 
 def do_training(tf_session, input_batch, output_batch):
-    input_placeholder = tf.placeholder(tf.float32, shape=(None, 4))
-    predicted_output = inference_with_softmax(input_placeholder, 4, 3)
+    input_placeholder = tf.placeholder(tf.float32, shape=(None, input_shape))
+    predicted_output = inference_with_softmax(input_placeholder, input_shape, output_shape)
 
-    cost = training_loss(predicted_output, output_batch)
+    encoded_output = np.eye(output_shape)[output_batch]
+    cost = training_loss(predicted_output, encoded_output)
+
+    # TODO There should be a better way to add it in tensorboard which can be tracked
+    # This won't provide the actual value as this is a tensor variable
+    print("Cost:", cost)
+
     gl_steps = tf.Variable(0, name="global_step", trainable=False)
-    grad_train_op = graddecent_training(cost, gl_steps)
+    grad_train_op = gradient_decent_training(cost, gl_steps)
 
     init = tf.initialize_all_variables()
     tf_session.run(init)
@@ -102,7 +110,7 @@ with tf.Session(config=tf.ConfigProto(log_device_placement=False)) as session:
         # TODO: This needs to done based on data size
         for i in range(2):
             train_data = train_i[start_index:start_index + batch_size]
-            train_actual_output = test_i[start_index:start_index + batch_size]
+            train_actual_output = train_out[start_index:start_index + batch_size]
 
             # Does the actual computation
             do_training(session, train_data, train_actual_output)
