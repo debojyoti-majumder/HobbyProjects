@@ -8,7 +8,7 @@ namespace Tutorial1.Data
 {
     public interface ITopicData
     {
-        IEnumerable<Topic> GetAll();
+        IEnumerable<Topic> GetByName(string name = null);
     }
 
     public class InMemoryTopicData : ITopicData
@@ -26,9 +26,10 @@ namespace Tutorial1.Data
             };
         }
 
-        public IEnumerable<Topic> GetAll()
+        public IEnumerable<Topic> GetByName(string name = null)
         {
             return from t in topics
+                   where string.IsNullOrEmpty(name) || t.Caption.StartsWith(name)
                    orderby t.Caption
                    select t;
         }

@@ -11,6 +11,8 @@ namespace Tutorial1.Pages.QuestionGroups
     {
         public string WelcomeMessage { get; set; }
         public IEnumerable<Topic> AllTopics { get; set; }
+
+        // Depedency of the model
         private readonly IConfiguration appConfig;
         private readonly ITopicData topicData;
 
@@ -20,10 +22,10 @@ namespace Tutorial1.Pages.QuestionGroups
             this.topicData = topicData;
         }
 
-        public void OnGet()
+        public void OnGet(string searchTerm)
         {
             WelcomeMessage = appConfig["TopicsMessage"];
-            AllTopics = topicData.GetAll();
+            AllTopics = topicData.GetByName(searchTerm);
         }
     }
 }
