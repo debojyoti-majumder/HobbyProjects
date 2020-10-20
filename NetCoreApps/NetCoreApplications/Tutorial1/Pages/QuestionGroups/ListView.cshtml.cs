@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 
@@ -16,16 +17,19 @@ namespace Tutorial1.Pages.QuestionGroups
         private readonly IConfiguration appConfig;
         private readonly ITopicData topicData;
 
+        [BindProperty(SupportsGet = true)]
+        public string SearchTerm { get; set; }
+
         public ListViewModel(IConfiguration configuration, ITopicData topicData)
         {
             appConfig = configuration;
             this.topicData = topicData;
         }
 
-        public void OnGet(string searchTerm)
+        public void OnGet()
         {
             WelcomeMessage = appConfig["TopicsMessage"];
-            AllTopics = topicData.GetByName(searchTerm);
+            AllTopics = topicData.GetByName(SearchTerm);
         }
     }
 }
