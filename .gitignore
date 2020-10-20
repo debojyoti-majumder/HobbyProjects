@@ -5,3 +5,6 @@ deepLearningFunda/.idea/modules.xml
 deepLearningFunda/.idea/misc.xml
 NetCoreApps/TutoApp1/bin/Debug/*
 NetCoreApps/TutoApp1/obj/Debug/*
+/NetCoreApps/NetCoreApplications/.vs
+/NetCoreApps/NetCoreApplications/Tutorial1/bin/Debug/netcoreapp2.1
+/NetCoreApps/NetCoreApplications/Tutorial1/obj
