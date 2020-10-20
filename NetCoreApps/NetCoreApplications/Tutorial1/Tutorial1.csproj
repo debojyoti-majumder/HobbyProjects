@@ -10,4 +10,8 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Tutorial1.Data\Tutorial1.Data.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -4,4 +4,8 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Tutorial1.Core\Tutorial1.Core.csproj" />
+  </ItemGroup>
+
 </Project>

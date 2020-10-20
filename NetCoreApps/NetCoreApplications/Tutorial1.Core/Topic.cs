@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Tutorial1.Core
 {
-    class Topic
+    public class Topic
     {
         public int Id { get; }
         public string Caption { get; }

@@ -1,26 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
+
+using Tutorial1.Core;
+using Tutorial1.Data;
 
 namespace Tutorial1.Pages.QuestionGroups
 {
     public class ListViewModel : PageModel
     {
-        public ListViewModel(IConfiguration configuration)
-        {
-            AppConfig = configuration;
-        }
-
         public string WelcomeMessage { get; set; }
-        private readonly IConfiguration AppConfig;
+        public IEnumerable<Topic> AllTopics { get; set; }
+        private readonly IConfiguration appConfig;
+        private readonly ITopicData topicData;
+
+        public ListViewModel(IConfiguration configuration, ITopicData topicData)
+        {
+            appConfig = configuration;
+            this.topicData = topicData;
+        }
 
         public void OnGet()
         {
-            WelcomeMessage = AppConfig["TopicsMessage"];
+            WelcomeMessage = appConfig["TopicsMessage"];
+            AllTopics = topicData.GetAll();
         }
     }
 }

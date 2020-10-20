@@ -7,3 +7,13 @@
 <h2>Question Topics</h2>
 
 @Model.WelcomeMessage
+
+<table>
+    @foreach (var t in Model.AllTopics)
+    {
+        <tr>
+            <td>@t.Caption</td>
+            <td>@t.Description</td>
+        </tr>
+    }
+</table>
