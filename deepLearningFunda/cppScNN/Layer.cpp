@@ -1,7 +1,6 @@
 #include "headers\NeuronUnit.hpp"
 #include "headers\Layer.hpp"
 
-
 Layer::Layer(vector<float>& input, int outputLength) {
 
 }
