@@ -8,10 +8,11 @@ using namespace std;
 
 class NeuralNetwork {
     private:
-        Layer inputLayer;
-        Layer outputLayer;
+        Layer           _inputLayer;
+        Layer           _outputLayer;
 
-        vector<Layer> hiddenLayer;
+        vector<Layer>   _hiddenLayers;
+        Layer&          _currnetLayer;
 
     public:
         NeuralNetwork(vector<float> inputValues, size_t outputLength);
