@@ -8,6 +8,7 @@ add_executable(firstNN
     main.cpp 
     InputLayer.cpp
     OutputLayer.cpp
+    HiddenLayer.cpp
 )
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
