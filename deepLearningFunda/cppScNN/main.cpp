@@ -1,26 +1,16 @@
 #include <iostream>
 #include <vector>
 
-#include "headers\NeuralNetwork.hpp"
-#include "headers\RandomVecGenerator.hpp"
+#include "headers/InputLayer.hpp"
+#include "headers/OutputLayer.hpp"
 
 int main(int argc, char** argv) {
-    RandomVecGenerator generator;
-    auto& randomInput { generator.getRandomNumbers(100) };
+    // As of now this layer would work with normalized data alone
+    InputLayer layer({0.45, 0.96, 0.77});
+    layer.getInputs();
+
+    OutputLayer outLayers({0.0, 0.0, 1.0});
+    std::cout << outLayers.getLoss({0.4, 0.3, 0.2}) << std::endl;
     
-    argc;
-    argv;
-
-    // 10 being the number of calsses
-    NeuralNetwork network(randomInput, 10);
-
-    // The input layer output needs to change accordingly    
-    network.addHiddenLayer(50,25);
-
-    // The second argument be the same as the number of classes for now
-    network.addHiddenLayer(25,10);
-
-    network.doForwardPass();
-
     return 0;
 }
