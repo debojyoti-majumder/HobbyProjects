@@ -10,10 +10,10 @@ enum class OutputLayerLossType {
 
 class OutputLayer {
     private:
-        const std::vector<double>& _output;
+        std::vector<double> _output;
 
     public:
-        OutputLayer(const std::vector<double>& output);
+        OutputLayer(std::vector<double> output);
 
         const std::vector<double> getOutput() const;
         double getLoss( const std::vector<double>& actualOutput, 

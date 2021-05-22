@@ -8,8 +8,12 @@ private:
     std::vector<double> _input;
 
 public:
-    InputLayer(const std::vector<double>& input);
-    const std::vector<double>& getInputs() const;
+    InputLayer() = default;
+    InputLayer(const InputLayer& ) = default;
+
+    InputLayer(std::vector<double>& input);
+
+    std::vector<double> getInputs() const;
 };
 
 #endif

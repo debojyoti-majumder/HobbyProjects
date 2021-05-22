@@ -6,15 +6,24 @@
 
 class HiddenLayer {
     private:
-        const std::vector<double>& _inputData;
-        bool _isConstructedFromInput;
+        const InputLayer&   _inputLayer;   
+        HiddenLayer*        _pPreviousLayer;
+        int                 _layerSize;
 
+        // There two are the core items, Domian objects
+        double                      _layerBias;
+        std::vector<double>         _layerWeights;
+        std::vector<double>         _layerOutput;
+        
+        void intialiseWeightsAndBias();
+    
     public:
-        HiddenLayer(const InputLayer& layer);
-        HiddenLayer(const HiddenLayer& layer);
+        HiddenLayer(const InputLayer& inp, int layerSize);
+        HiddenLayer(HiddenLayer* prevLayer, int layerSize);
 
         // Member functions
-        std::vector<double> getPrediction() const;      
+        std::vector<double> getPrediction();
+        int getLength() const;      
 };
 
 #endif

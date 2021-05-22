@@ -1,6 +1,7 @@
 #include "headers/OutputLayer.hpp"
 
-OutputLayer::OutputLayer(const std::vector<double> &output) : _output(output) {
+OutputLayer::OutputLayer(std::vector<double> output) {
+    for(auto& v:output) _output.emplace_back(v);
 }
 
 const std::vector<double> OutputLayer::getOutput() const {
