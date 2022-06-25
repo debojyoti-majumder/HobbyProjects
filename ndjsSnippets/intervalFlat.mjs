@@ -1,8 +1,34 @@
 // The purpose of this program is to use anync way to elumating a job which 
 // would run for certain ammount of time
 
-// As of now this is a any to any map
-const jobMap = new Map();
+class JobManager {
+    constructor() {
+        this.jobMap = new Map();
+        this.jobIdCounter = 0;
+    }
+
+    /**
+     * 
+     * @param {Number} limit 
+     */
+    addJob(limit) {
+        const intervalObj = setInterval(() => {
+            this.execute(jobid)
+        },1000);
+
+        let intervalCtx = new IntervalConext(intervalObj,limit);
+
+        let jobid = this.jobIdCounter;
+        this.jobMap.set(this.jobIdCounter, intervalCtx);
+
+        this.jobIdCounter += 1;
+    }
+
+    execute(jobNumber) {
+        let obj = this.jobMap.get(jobNumber);
+        obj.execute(jobNumber);
+    }
+}
 
 class IntervalConext {
     /**
@@ -31,16 +57,6 @@ class IntervalConext {
     }
 }
 
-// Once the limit is reached it would stop the printing
-function intervalFunction(param) {
-    const ctx = jobMap.get(param);
-    ctx.execute();
-}
-
-const firstInterval = setInterval(() => { intervalFunction(1)}, 1000);
-let intervalCtx1 = new IntervalConext(firstInterval,5);
-jobMap.set(1, intervalCtx1);
-
-const secondInterval = setInterval(() => { intervalFunction(2)}, 500);
-const intervalCtx2 = new IntervalConext(secondInterval, 10);
-jobMap.set(2, intervalCtx2);
+const jobMgr = new JobManager()
+jobMgr.addJob(2)
+jobMgr.addJob(6)
