@@ -1,7 +1,13 @@
-from typing import Dict
+from typing import Collection, Dict
 from datetime import datetime
 import os
-import pymongo
+from gridfs import Database
+
+# MongoDB Imports
+from pymongo import MongoClient
+from pymongo.database import Database
+from pymongo.collection import Collection
+from pymongo.results import InsertOneResult
 
 # This is the model class that we would be using the
 class TodoItem:
@@ -15,8 +21,9 @@ class TodoItem:
     
     def getDict(self) -> Dict:
         returnObject = {
-            "caption" : self.taskDescription,
-            "description" : self.taskCaption
+            "caption" : self.taskCaption,
+            "description" : self.taskDescription,
+            "creationTime" : self.taskCreationTime
         }
 
         return returnObject;
@@ -28,7 +35,9 @@ class ConnectionBuilder:
         self.options = "?retryWrites=true&w=majority"
         self.cluster = "cluster0.ozsgds8.mongodb.net"
 
-    def getConnectionString(self) -> str:
+    def getConnectionString(self, isLocal = True) -> str:
+        if isLocal: return "localhost:27017"
+
         connectionString = ""
         connectionString += "mongodb+srv://"
         connectionString += self.dbUserName
@@ -46,16 +55,20 @@ class ConnectionBuilder:
         # Adding the options
         connectionString += self.options
 
+        # Returning the actual value
         return connectionString
 
 # This repository should be bound the model class
 # TodoItem  
 class TodoRepository:
-    def __init__(self) -> None:
-        pass
+    def __init__(self, taskCol : Collection) -> None:
+        self.dbCollection = taskCol
 
-    def addTodo(task:TodoItem) -> str:
-        return ""
+    def addTodo(self,task:TodoItem) -> str:
+        tdObj = task.getDict()
+        insertoneRes : InsertOneResult = self.dbCollection.insert_one(tdObj)
+
+        return insertoneRes.inserted_id
     
     def findTodoItem(id:str) -> TodoItem:
         pass
@@ -69,20 +82,33 @@ class TodoRepository:
     def updateCaption(id:str, caption:str) -> bool:
         return False;
 
-dbConnection : pymongo.MongoClient = None
-todoDB = None
+dbConnection : MongoClient = None
+todoDB : Database = None
+
+def createTask(todoRepo : TodoRepository) -> None :
+    newTaskCaption = input("Caption:")
+    newTaskDescription = input("Description:")
+
+    # Adding the task to the repository
+    newTask = TodoItem(newTaskCaption, newTaskDescription);
+    taskID = todoRepo.addTodo(newTask)
+    print("Created Task ID:{0}".format(taskID))
 
 # Function Entry point
 def main():
     print("Running simple MongoDB CRUD Prog")
 
     connBuilder = ConnectionBuilder();
-    connString = connBuilder.getConnectionString()
+    connString = connBuilder.getConnectionString(False)
     print("Using connection string {0}".format(connString))
 
-    dbConnection = pymongo.MongoClient(connString)
+    # Database setup is being performed
+    dbConnection = MongoClient(connString)
     todoDB = dbConnection.get_database("todo")
-    print(todoDB)
+    tasksCollection : Collection = todoDB.get_collection("tasks")
+
+    # Initing the repository
+    todoRepo = TodoRepository(tasksCollection)
 
     # TODO: This can be automated using some kind of helper
     # library, there might be packages that are present but not going to
@@ -98,12 +124,10 @@ def main():
         userInput = input("Your Option:")
         option = int(userInput)
 
+        # Say this happens to be the first operation, until this operation is
+        # not performed then no validations are done
         if option == 1:
-            newTaskCaption = input("Caption:")
-            newTaskDescription = input("Description:")
-
-            newTask = TodoItem(newTaskCaption, newTaskDescription);
-            print(newTask)
+            createTask(todoRepo)
         elif option == 3:
             taskId = input("Id:")
 
