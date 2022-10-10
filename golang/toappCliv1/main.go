@@ -17,6 +17,34 @@ func showHelp(commands []string) {
 	fmt.Println("")
 }
 
+type ICommandTask interface {
+	process() int
+}
+
+type UserCommand struct {
+}
+
+type TaskCommand struct {
+}
+
+type AssignCommand struct {
+}
+
+func (cmd AssignCommand) process() int {
+	fmt.Println("Invoking assign command")
+	return 0
+}
+
+func (cmd UserCommand) process() int {
+	fmt.Println("Invoking user commands")
+	return 0
+}
+
+func (cmd TaskCommand) process() int {
+	fmt.Println("Invoking task commands")
+	return 0
+}
+
 func processTask() {
 	fmt.Println("Processing task reqeuest")
 }
@@ -43,11 +71,19 @@ func cmdIndex(subCommands []string, inp string) int {
 func main() {
 	fmt.Println("Staring ToDo Cli application")
 	// Defining sub commands
-	subCommands := make([]string, 3)
-	subCommands[0] = "task"
-	subCommands[1] = "user"
-	subCommands[2] = "assign"
+	subCommands := make([]string, 0)
+	commandFunctions := make([]ICommandTask, 0)
 
+	subCommands = append(subCommands, "task")
+	commandFunctions = append(commandFunctions, TaskCommand{})
+
+	subCommands = append(subCommands, "user")
+	commandFunctions = append(commandFunctions, UserCommand{})
+
+	subCommands = append(subCommands, "assign")
+	commandFunctions = append(commandFunctions, AssignCommand{})
+
+	fmt.Println(subCommands)
 	commandLineArgs := os.Args[1:]
 
 	if len(commandLineArgs) == 0 {
@@ -75,4 +111,7 @@ func main() {
 	default:
 		showHelp(subCommands)
 	}
+
+	// This is the generic invoke that I am calling
+	commandFunctions[inputIndex].process()
 }
