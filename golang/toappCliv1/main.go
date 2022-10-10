@@ -6,7 +6,38 @@ import (
 )
 
 func showHelp(commands []string) {
+	fmt.Println("Valid commands:")
 
+	// we use this for going over elements in a slice
+	for _, command := range commands {
+		fmt.Print(command)
+		fmt.Print(" ")
+	}
+
+	fmt.Println("")
+}
+
+func processTask() {
+	fmt.Println("Processing task reqeuest")
+}
+
+func processUser() {
+	fmt.Println("Processing user request")
+}
+
+func assignTask() {
+	fmt.Println("Processing taks assignment operation")
+}
+
+func cmdIndex(subCommands []string, inp string) int {
+	findIndex := -1
+
+	for i, value := range subCommands {
+		if inp == value {
+			return i
+		}
+	}
+	return findIndex
 }
 
 func main() {
@@ -26,5 +57,22 @@ func main() {
 	}
 
 	inputCommand := os.Args[1]
-	fmt.Println(inputCommand)
+	inputIndex := cmdIndex(subCommands, inputCommand)
+
+	if inputIndex == -1 {
+		showHelp(subCommands)
+		return
+	}
+
+	// This would be removed at a later point in time
+	switch inputIndex {
+	case 0:
+		processTask()
+	case 1:
+		processUser()
+	case 2:
+		assignTask()
+	default:
+		showHelp(subCommands)
+	}
 }
