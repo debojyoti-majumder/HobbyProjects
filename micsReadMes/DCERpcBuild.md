@@ -1,4 +1,4 @@
-I am trying to build DceRPC on Ubuntu VM and these are dependencies that are requires. Of course prepend sudo before the commands
+I am trying to build DceRPC from https://github.com/dcerpc/dcerpc on Ubuntu VM and these are dependencies that are requires. Of course prepend sudo before the commands
 
 1. apt install libtool
 2. apt install flex
