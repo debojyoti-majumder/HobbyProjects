@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -22,6 +23,37 @@ func getAllUsers(httpContext *gin.Context) {
 	httpContext.IndentedJSON(http.StatusOK, allUsers)
 }
 
+func getUserbyID(httpContext *gin.Context) {
+	var idString string
+
+	idString = httpContext.Param("id")
+	id, err := strconv.Atoi(idString)
+
+	if err != nil {
+		httpContext.IndentedJSON(
+			http.StatusBadRequest,
+			gin.H{"message": "needs to be an int"},
+		)
+		return
+	}
+
+	for _, user := range allUsers {
+		if user.ID == id {
+			httpContext.IndentedJSON(
+				http.StatusOK,
+				user,
+			)
+
+			return
+		}
+	}
+
+	httpContext.IndentedJSON(
+		http.StatusNotFound,
+		gin.H{"message": "User with ID not found"},
+	)
+}
+
 func addNewUser(httpContext *gin.Context) {
 	var newUser SimpleUser
 
@@ -33,6 +65,7 @@ func addNewUser(httpContext *gin.Context) {
 			gin.H{"message": "Unable to parse JSON"},
 		)
 
+		println(err.Error())
 		return
 	}
 
@@ -65,7 +98,10 @@ func main() {
 
 	// Setting up the routes
 	defaultRouter.GET("/users", getAllUsers)
+	defaultRouter.GET("/users/:id", getUserbyID)
+
 	defaultRouter.POST("/users", addNewUser)
 
+	// Running the server locally
 	defaultRouter.Run("localhost:8080")
 }
