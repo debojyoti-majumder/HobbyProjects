@@ -74,10 +74,10 @@ func main() {
 /*
 Testing out these APIs
 
-debojyotim@MR9Q0VGKM2 ~ % curl -X POST -H "Content-Type: application/json" -d '{"Caption": "Buy groceries", "done": false}' http://localhost:8080/tasks
+% curl -X POST -H "Content-Type: application/json" -d '{"Caption": "Buy groceries", "done": false}' http://localhost:8080/tasks
 {"ID":2,"Caption":"Buy groceries","Done":false}%
 
-debojyotim@MR9Q0VGKM2 ~ % curl -X GET http://localhost:8080/tasks
+% curl -X GET http://localhost:8080/tasks
 
 curl -X GET http://localhost:8080/tasks/2
 {"ID":2,"Caption":"Buy groceries","Done":false}
