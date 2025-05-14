@@ -14,6 +14,7 @@ type Task struct {
 }
 
 var tasks []Task
+var idCounter int
 
 func createTask(ctx *gin.Context) {
 	var newTask Task
@@ -24,7 +25,10 @@ func createTask(ctx *gin.Context) {
 		return
 	}
 
-	newTask.ID = len(tasks) + 1
+	// The ID always increases
+	newTask.ID = idCounter + 1
+	idCounter++
+
 	tasks = append(tasks, newTask)
 
 	// Returning the response after the task is done
@@ -35,7 +39,7 @@ func getAllTasks(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, tasks)
 }
 
-func getSingleTask(ctx *gin.Context) {
+func getTaskbyId(ctx *gin.Context) {
 	idValue := ctx.Param("id")
 	id, err := strconv.Atoi(idValue)
 
@@ -55,12 +59,14 @@ func getSingleTask(ctx *gin.Context) {
 }
 
 func main() {
+	idCounter = 0
 	defaultRouter := gin.Default()
 
-	// Setting the main operations for the tasks
-	defaultRouter.POST("/tasks", createTask)
-	defaultRouter.GET("/tasks", getAllTasks)
-	defaultRouter.GET("/tasks/:id", getSingleTask)
+	taskRouter := defaultRouter.Group("/tasks")
+
+	taskRouter.GET("", getAllTasks)
+	taskRouter.POST("", createTask)
+	taskRouter.GET("/:id", getTaskbyId)
 
 	defaultRouter.Run(":8080")
 }
