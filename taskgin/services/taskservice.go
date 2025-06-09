@@ -6,20 +6,25 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 type Task struct {
-	ID      int
+	gorm.Model
 	Caption string
 	Done    bool
 }
 
-var idCounter int
 var tasks []Task
+var repository *gorm.DB
 
-func SetupTaskService(router *gin.RouterGroup) {
+func SetupTaskService(
+	router *gin.RouterGroup,
+	db *gorm.DB) {
 	tasks = []Task{}
-	idCounter = 0
+
+	repository = db
+	repository.AutoMigrate(&Task{})
 
 	log.Println("Setting up API handlers")
 
@@ -39,10 +44,7 @@ func createTask(ctx *gin.Context) {
 		return
 	}
 
-	// The ID always increases
-	newTask.ID = idCounter + 1
-	idCounter++
-
+	repository.Create(&newTask)
 	tasks = append(tasks, newTask)
 
 	// Returning the response after the task is done
@@ -65,13 +67,9 @@ func getTaskbyId(ctx *gin.Context) {
 		return
 	}
 
-	for _, task := range tasks {
-		if task.ID == id {
-			ctx.JSON(http.StatusOK, task)
-			return
-		}
-	}
+	// Finds the tasks by ID
+	var foundTask Task
+	repository.First(&foundTask, id)
 
-	log.Println("Task not found")
-	ctx.JSON(http.StatusNotFound, gin.H{"id": id})
+	ctx.JSON(http.StatusOK, foundTask)
 }
