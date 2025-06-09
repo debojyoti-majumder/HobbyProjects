@@ -1,6 +1,7 @@
 package services
 
 import (
+	"log"
 	"net/http"
 	"strconv"
 
@@ -20,13 +21,17 @@ func SetupTaskService(router *gin.RouterGroup) {
 	tasks = []Task{}
 	idCounter = 0
 
-	router.POST("", CreateTask)
-	router.GET("", GetAllTasks)
-	router.GET("/:id", GetTaskbyId)
+	log.Println("Setting up API handlers")
+
+	router.POST("", createTask)
+	router.GET("", getAllTasks)
+	router.GET("/:id", getTaskbyId)
 }
 
-func CreateTask(ctx *gin.Context) {
+func createTask(ctx *gin.Context) {
 	var newTask Task
+
+	log.Print("Creating a new task")
 
 	// Parsing the task object from JSON
 	if err := ctx.BindJSON(&newTask); err != nil {
@@ -44,13 +49,16 @@ func CreateTask(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, newTask)
 }
 
-func GetAllTasks(ctx *gin.Context) {
+func getAllTasks(ctx *gin.Context) {
+	log.Print("Getting all the task")
 	ctx.JSON(http.StatusOK, tasks)
 }
 
-func GetTaskbyId(ctx *gin.Context) {
+func getTaskbyId(ctx *gin.Context) {
 	idValue := ctx.Param("id")
 	id, err := strconv.Atoi(idValue)
+
+	log.Printf("Getting tasks for id %d\n", id)
 
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -64,5 +72,6 @@ func GetTaskbyId(ctx *gin.Context) {
 		}
 	}
 
+	log.Println("Task not found")
 	ctx.JSON(http.StatusNotFound, gin.H{"id": id})
 }
